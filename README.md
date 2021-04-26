@@ -50,6 +50,14 @@ Define whether the AMI should be created with `no_reboot` enabled. The default i
 set :elbas_no_reboot_on_ami_creation, false
 ```
 
+If you set `elbas_no_reboot_on_ami_creation = true` then you may want to instruct your OS to flush all filesystem changes to disk before creating the AMI.
+
+```ruby
+set :elbas_sync_and_wait, true        # Default: false
+set :elbas_sync_and_wait_cmd, 'sync'  # Default: sync
+set :elbas_sync_and_wait_delay, 5     # Default: 5 seconds
+```
+
 ## Usage
 
 Instead of using Capistrano's `server` method, use `autoscale` instead in

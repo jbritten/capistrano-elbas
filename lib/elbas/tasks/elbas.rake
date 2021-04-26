@@ -19,6 +19,18 @@ namespace :elbas do
       release_version = fetch(:elbas_release_version) || fetch(:current_revision) || `git rev-parse HEAD`.strip
       release_timestamp = fetch(:release_timestamp) || env.timestamp.strftime("%Y%m%d%H%M%S")
       no_reboot = fetch(:elbas_no_reboot_on_ami_creation, true)
+      sync_and_wait = fetch(:elbas_sync_and_wait, false)
+
+      if sync_and_wait
+        sync_and_wait_cmd = fetch(:elbas_sync_and_wait_cmd, "sync")
+        sync_and_wait_delay = fetch(:elbas_sync_and_wait_delay, 5)
+
+        info "Calling #{sync_and_wait_cmd} and waiting #{sync_and_wait_delay} seconds..."
+        on roles([:web, :app]) do
+          execute :sudo, sync_and_wait_cmd
+        end
+        sleep sync_and_wait_delay
+      end
 
       ami_instance = asg.instances.running.sample
       info "Creating AMI from instance #{ami_instance.id} (no_reboot = #{no_reboot})..."
