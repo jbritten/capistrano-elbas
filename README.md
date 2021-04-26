@@ -44,6 +44,12 @@ Define how many past AMIs to keep during cleanup. The default is 5.
 set :elbas_keep_amis, 5
 ```
 
+Define whether the AMI should be created with `no_reboot` enabled. The default is `true` such that the instance is not rebooted when creating the image. However, AWS recommends `no_reboot = false` in order to guarantee the file system integrity of the created image.
+
+```ruby
+set :elbas_no_reboot_on_ami_creation, false
+```
+
 ## Usage
 
 Instead of using Capistrano's `server` method, use `autoscale` instead in

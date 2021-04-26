@@ -18,10 +18,11 @@ namespace :elbas do
 
       release_version = fetch(:elbas_release_version) || fetch(:current_revision) || `git rev-parse HEAD`.strip
       release_timestamp = fetch(:release_timestamp) || env.timestamp.strftime("%Y%m%d%H%M%S")
+      no_reboot = fetch(:elbas_no_reboot_on_ami_creation, true)
 
       ami_instance = asg.instances.running.sample
-      info "Creating AMI from instance #{ami_instance.id}..."
-      ami = Elbas::AWS::AMI.create ami_instance
+      info "Creating AMI from instance #{ami_instance.id} (no_reboot = #{no_reboot})..."
+      ami = Elbas::AWS::AMI.create ami_instance, no_reboot
       info  "Created AMI: #{ami.id}"
 
       info "Tagging AMI: ELBAS-Deploy-group = #{asg.name}"
